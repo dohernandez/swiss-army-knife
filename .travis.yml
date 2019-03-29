@@ -1,0 +1,55 @@
+language: go
+
+sudo: false
+
+go:
+  - 1.12.x
+
+branches:
+  except:
+  - /^v[0-9]/
+
+env:
+  global:
+    - REPO_NAME=swiss-army-knife
+    - BINARY_NAME=swiss-army-knife
+    - VERSION=$(eval ./resources/scripts/ci-version.sh)
+
+stages:
+  - "Code Style"
+  - "Unit Tests"
+  - "Promote Release"
+  - "Promote Docker Image"
+
+jobs:
+  include:
+    - stage: "Code Style"
+      install: skip
+      script: resources/scripts/ci-code-style.sh
+      if: branch = master || type = pull_request
+
+    - stage: "Unit Tests"
+      install: skip
+      script: resources/scripts/ci-unit-tests.sh
+      if: branch = master || type = pull_request
+
+    - stage: "Promote Release"
+      install: skip
+      script:
+        - resources/scripts/ci-promote-release.sh
+      if: branch = master
+      env:
+        - SEMVER_RELEASE_LEVEL=minor
+        - VERSION=$(eval ./resources/scripts/ci-bump-version.sh)
+
+      deploy:
+        provider: releases
+        api_key: $GITHUB_TOKEN
+        skip_cleanup: true
+        file: "archive/*.tar.gz"
+        file_glob: true
+
+    - stage: "Promote Docker Image"
+      install: skip
+      script: resources/scripts/ci-promote-docker-image.sh
+      if: branch = master
