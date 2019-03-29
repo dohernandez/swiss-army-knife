@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	ttio "github.com/heetch/Darien-technical-test/io"
+	sakio "github.com/dohernandez/swiss-army-knife/io"
 )
 
 func ExampleStdinInput_Next() {
@@ -17,7 +17,7 @@ func ExampleStdinInput_Next() {
 {"id":1874,"lat":48.95913471644928,"lng":2.240928289825033,"created_at":"2016-12-14 07:00:01"}`
 
 	scanner := bufio.NewScanner(strings.NewReader(stdin))
-	input := ttio.NewStdinInput(scanner)
+	input := sakio.NewStdinInput(scanner)
 
 	if r, err := input.Next(context.TODO()); err == nil {
 		fmt.Printf("%v", r)
@@ -43,7 +43,7 @@ func ExampleStdinInput_WithUnmarshaling() {
 	var stdItem stdinItem
 
 	scanner := bufio.NewScanner(strings.NewReader(stdin))
-	input := ttio.NewStdinInput(scanner)
+	input := sakio.NewStdinInput(scanner)
 	input.WithUnmarshaling(func(_ context.Context, i string) (interface{}, error) {
 		if err := json.Unmarshal([]byte(i), &stdItem); err != nil {
 			return nil, err
@@ -62,7 +62,7 @@ func ExampleStdinInput_WithUnmarshaling() {
 
 func ExampleStdoutOutput_Write() {
 	ctx := context.TODO()
-	output := ttio.StdoutOutput{}
+	output := sakio.StdoutOutput{}
 
 	output.Append(ctx, `{"id":4649,"lat":49.01249051526539,"lng":2.0403327446430257,"created_at":"2016-12-14 07:00:00"}`)
 
@@ -89,7 +89,7 @@ func ExampleStdoutOutput_WithMarshaling() {
 		CreatedAt: "2016-12-14 07:00:00",
 	}
 	ctx := context.TODO()
-	output := ttio.StdoutOutput{}
+	output := sakio.StdoutOutput{}
 	output.WithMarshaling(func(_ context.Context, i interface{}) (string, error) {
 		r, err := json.Marshal(i)
 		if err != nil {

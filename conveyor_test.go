@@ -1,10 +1,10 @@
-package technical_test_test
+package swissarmyknife_test
 
 import (
 	"io"
 	"testing"
 
-	technical_test "github.com/heetch/Darien-technical-test"
+	swiss_army_knife "github.com/dohernandez/swiss-army-knife"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -41,7 +41,7 @@ func newChanWithItems(ii []Item) chan interface{} {
 	return ch
 }
 
-func expectItemsOnAccept(t *testing.T, c technical_test.Conveyor, ii []Item) {
+func expectItemsOnAccept(t *testing.T, c swiss_army_knife.Conveyor, ii []Item) {
 	n := 0
 	for {
 		val := Item{}
@@ -70,11 +70,11 @@ func expectItemsOnAccept(t *testing.T, c technical_test.Conveyor, ii []Item) {
 func TestChannelConveyor(t *testing.T) {
 	testCases := []struct {
 		scenario string
-		assert   func(t *testing.T, cc technical_test.ChannelConveyor, ii []Item)
+		assert   func(t *testing.T, cc swiss_army_knife.ChannelConveyor, ii []Item)
 	}{
 		{
 			scenario: "Coveyor check input is correct",
-			assert: func(t *testing.T, cc technical_test.ChannelConveyor, ii []Item) {
+			assert: func(t *testing.T, cc swiss_army_knife.ChannelConveyor, ii []Item) {
 				expectItemsOnAccept(t, cc, items)
 
 				cc.Close()
@@ -82,7 +82,7 @@ func TestChannelConveyor(t *testing.T) {
 		},
 		{
 			scenario: "Coveyor check input in chain next is correct",
-			assert: func(t *testing.T, cc technical_test.ChannelConveyor, ii []Item) {
+			assert: func(t *testing.T, cc swiss_army_knife.ChannelConveyor, ii []Item) {
 				for {
 					val := Item{}
 					if err := cc.Accept(&val); err != nil {
@@ -113,7 +113,7 @@ func TestChannelConveyor(t *testing.T) {
 		t.Run(tc.scenario, func(t *testing.T) {
 			input := newChanWithItems(items)
 
-			cc := technical_test.NewChannelConveyor(input)
+			cc := swiss_army_knife.NewChannelConveyor(input)
 
 			tc.assert(t, cc, items)
 		})

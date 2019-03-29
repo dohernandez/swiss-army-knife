@@ -1,11 +1,11 @@
-package technical_test_test
+package swissarmyknife_test
 
 import (
 	"context"
 	"encoding/json"
 	"testing"
 
-	technical_test "github.com/heetch/Darien-technical-test"
+	swiss_army_knife "github.com/dohernandez/swiss-army-knife"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,12 +19,12 @@ func TestFilteringOperation(t *testing.T) {
 
 	testCases := []struct {
 		scenario string
-		pairs    []technical_test.PairKeyValue
+		pairs    []swiss_army_knife.PairKeyValue
 		result   map[string]interface{}
 	}{
 		{
 			scenario: "Operation filter out by single key/value pair",
-			pairs: []technical_test.PairKeyValue{
+			pairs: []swiss_army_knife.PairKeyValue{
 				{
 					Key:   "id",
 					Value: "1629",
@@ -33,7 +33,7 @@ func TestFilteringOperation(t *testing.T) {
 		},
 		{
 			scenario: "Operation do not filter out by single key/value pair",
-			pairs: []technical_test.PairKeyValue{
+			pairs: []swiss_army_knife.PairKeyValue{
 				{
 					Key:   "id",
 					Value: "1874",
@@ -43,7 +43,7 @@ func TestFilteringOperation(t *testing.T) {
 		},
 		{
 			scenario: "Operation filter out by multiple key/value pair",
-			pairs: []technical_test.PairKeyValue{
+			pairs: []swiss_army_knife.PairKeyValue{
 				{
 					Key:   "lat",
 					Value: "48.83168740132889",
@@ -56,7 +56,7 @@ func TestFilteringOperation(t *testing.T) {
 		},
 		{
 			scenario: "Operation do not filter out by multiple key/value pair",
-			pairs: []technical_test.PairKeyValue{
+			pairs: []swiss_army_knife.PairKeyValue{
 				{
 					Key:   "lat",
 					Value: "50.62508560995884",
@@ -74,11 +74,11 @@ func TestFilteringOperation(t *testing.T) {
 		tc := tc // Pinning ranged variable, more info: https://github.com/kyoh86/scopelint.
 		t.Run(tc.scenario, func(t *testing.T) {
 			ctx := context.TODO()
-			operation := technical_test.NewFilteringOperation(ctx, tc.pairs)
+			operation := swiss_army_knife.NewFilteringOperation(ctx, tc.pairs)
 
 			r, err := operation(ctx, value)
 			if tc.result == nil {
-				assert.EqualError(t, err, technical_test.ErrDoNotEmit.Error())
+				assert.EqualError(t, err, swiss_army_knife.ErrDoNotEmit.Error())
 				assert.Empty(t, r)
 			} else {
 				assert.NoError(t, err)
@@ -98,12 +98,12 @@ func TestAppendInformationOperation(t *testing.T) {
 
 	testCases := []struct {
 		scenario string
-		pairs    []technical_test.PairKeyValue
+		pairs    []swiss_army_knife.PairKeyValue
 		result   map[string]interface{}
 	}{
 		{
 			scenario: "Operation append country information by single key/value pair",
-			pairs: []technical_test.PairKeyValue{
+			pairs: []swiss_army_knife.PairKeyValue{
 				{
 					Key:   "country",
 					Value: "fr",
@@ -122,7 +122,7 @@ func TestAppendInformationOperation(t *testing.T) {
 		},
 		{
 			scenario: "Operation append/modify country, city and lat by multiple key/value pair",
-			pairs: []technical_test.PairKeyValue{
+			pairs: []swiss_army_knife.PairKeyValue{
 				{
 					Key:   "lat",
 					Value: "50.62508560995884",
@@ -156,7 +156,7 @@ func TestAppendInformationOperation(t *testing.T) {
 		value := value
 		t.Run(tc.scenario, func(t *testing.T) {
 			ctx := context.TODO()
-			operation := technical_test.NewAppendInformationOperation(ctx, tc.pairs)
+			operation := swiss_army_knife.NewAppendInformationOperation(ctx, tc.pairs)
 
 			// copyMap the value to keep the original.
 			r, err := operation(ctx, copyMap(value.(map[string]interface{})))
@@ -189,12 +189,12 @@ func TestRemoveInformationOperation(t *testing.T) {
 
 	testCases := []struct {
 		scenario string
-		keys     []technical_test.Key
+		keys     []swiss_army_knife.Key
 		result   map[string]interface{}
 	}{
 		{
 			scenario: "Operation remove created_at information by single key",
-			keys:     []technical_test.Key{"created_at"},
+			keys:     []swiss_army_knife.Key{"created_at"},
 			result: func() map[string]interface{} {
 				// value type does not vary, ok to rely on panic
 				// nolint:errcheck
@@ -208,7 +208,7 @@ func TestRemoveInformationOperation(t *testing.T) {
 		},
 		{
 			scenario: "Operation remove lat and lng information by multiple key",
-			keys:     []technical_test.Key{"lat", "lng"},
+			keys:     []swiss_army_knife.Key{"lat", "lng"},
 			result: func() map[string]interface{} {
 				// value type does not vary, ok to rely on panic
 				// nolint:errcheck
@@ -228,7 +228,7 @@ func TestRemoveInformationOperation(t *testing.T) {
 		value := value
 		t.Run(tc.scenario, func(t *testing.T) {
 			ctx := context.TODO()
-			operation := technical_test.NewRemoveInformationOperation(ctx, tc.keys)
+			operation := swiss_army_knife.NewRemoveInformationOperation(ctx, tc.keys)
 
 			// copyMap the value to keep the original.
 			r, err := operation(ctx, copyMap(value.(map[string]interface{})))
@@ -253,12 +253,12 @@ func TestPrefixKeyOperation(t *testing.T) {
 
 	testCases := []struct {
 		scenario string
-		pairs    []technical_test.PairKeyPrefix
+		pairs    []swiss_army_knife.PairKeyPrefix
 		result   map[string]interface{}
 	}{
 		{
 			scenario: "Operation prefix id (_id) by single key/prefix pair",
-			pairs: []technical_test.PairKeyPrefix{
+			pairs: []swiss_army_knife.PairKeyPrefix{
 				{
 					Key:    "id",
 					Prefix: "_",
@@ -279,7 +279,7 @@ func TestPrefixKeyOperation(t *testing.T) {
 		},
 		{
 			scenario: "Operation prefix id (_id), lat (c_lat) and lng (c_lng) by multiple key/prefix pair",
-			pairs: []technical_test.PairKeyPrefix{
+			pairs: []swiss_army_knife.PairKeyPrefix{
 				{
 					Key:    "lat",
 					Prefix: "c_",
@@ -311,7 +311,7 @@ func TestPrefixKeyOperation(t *testing.T) {
 		value := value
 		t.Run(tc.scenario, func(t *testing.T) {
 			ctx := context.TODO()
-			operation := technical_test.NewPrefixKeyOperation(ctx, tc.pairs)
+			operation := swiss_army_knife.NewPrefixKeyOperation(ctx, tc.pairs)
 
 			// copyMap the value to keep the original.
 			r, err := operation(ctx, copyMap(value.(map[string]interface{})))

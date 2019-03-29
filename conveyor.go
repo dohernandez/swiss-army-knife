@@ -1,4 +1,4 @@
-package technical_test
+package swissarmyknife
 
 import (
 	"bytes"

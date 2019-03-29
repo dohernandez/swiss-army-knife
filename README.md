@@ -29,7 +29,7 @@ In this getting started guide we will go through how to [install](#installation)
 #### Install library
 
 ```bash
-go get -u github.com/heetch/Darien-technical-test
+go get -u github.com/dohernandez/swiss-army-knife
 ```
 
 [[table of contents]](#table-of-contents)
@@ -37,7 +37,7 @@ go get -u github.com/heetch/Darien-technical-test
 <a name="install-binaries"></a>
 #### Install swiss-army-knife! binaries
 
-You can download the binary for your platform of choice from the [releases page](https://github.com/heetch/Darien-technical-test/releases/latest).
+You can download the binary for your platform of choice from the [releases page](https://github.com/dohernandez/swiss-army-knife/releases/latest).
 
 Once downloaded, the binary can be run from anywhere. Ideally, though, you should move it into your $PATH for easy use. /usr/local/bin is a popular location for this.
 
@@ -63,8 +63,8 @@ import (
     "fmt"
     "os"
 
-    technical_test "github.com/heetch/Darien-technical-test"
-    ttio "github.com/heetch/Darien-technical-test/io"
+    swiss_army_knife "github.com/dohernandez/swiss-army-knife"
+    sakio "github.com/dohernandez/swiss-army-knife/io"
 )
 
 func main() {
@@ -72,12 +72,12 @@ func main() {
 	
 	// create input Stdin
     scanner := bufio.NewScanner(os.Stdin)
-    input := ttio.NewStdinInput(scanner)
+    input := sakio.NewStdinInput(scanner)
 
     // create output Stdout
-    output := ttio.StdoutOutput{}
+    output := sakio.StdoutOutput{}
 
-    p := technical_test.ChannelConveyorProcessor{}
+    p := swiss_army_knife.ChannelConveyorProcessor{}
 
     if err := p.Process(ctx, input, &output); err != nil {
         panic(err)
@@ -127,10 +127,10 @@ func filteringOperation(ctx context.Context, value interface{}) (interface{}, er
 
 The following default operations are available in the library.
 
-- `technical_test.NewFilteringOperation` creates a filtering Operation based on pairs.
-- `technical_test.NewAppendInformationOperation` creates an append information Operation based on pairs.
-- `technical_test.NewRemoveInformationOperation` creates a remove information Operation based on key.
-- `technical_test.NewPrefixKeyOperation` creates a prefix key Operation based on key/prefix pair.
+- `swiss_army_knife.NewFilteringOperation` creates a filtering Operation based on pairs.
+- `swiss_army_knife.NewAppendInformationOperation` creates an append information Operation based on pairs.
+- `swiss_army_knife.NewRemoveInformationOperation` creates a remove information Operation based on key.
+- `swiss_army_knife.NewPrefixKeyOperation` creates a prefix key Operation based on key/prefix pair.
 
 [[table of contents]](#table-of-contents)
 

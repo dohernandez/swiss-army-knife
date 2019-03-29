@@ -11,7 +11,7 @@ to this document in a pull request.
 This project adheres to the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code.
 
-We accept contributions via Pull Requests on [Github](https://github.com/heetch/Darien-technical-test).
+We accept contributions via Pull Requests on [Github](https://github.com/dohernandez/swiss-army-knife).
 
 ## How Can I Contribute?
 

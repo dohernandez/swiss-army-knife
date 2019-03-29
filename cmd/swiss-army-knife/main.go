@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	technical_test "github.com/heetch/Darien-technical-test"
-	ttio "github.com/heetch/Darien-technical-test/io"
-	"github.com/heetch/Darien-technical-test/version"
+	swiss_army_knife "github.com/dohernandez/swiss-army-knife"
+	sakio "github.com/dohernandez/swiss-army-knife/io"
+	"github.com/dohernandez/swiss-army-knife/version"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli"
 )
@@ -68,10 +68,10 @@ func main() {
 
 		output := initOutput()
 
-		p := technical_test.ChannelConveyorProcessor{}
+		p := swiss_army_knife.ChannelConveyorProcessor{}
 
 		// init operations
-		var operations []technical_test.Operation
+		var operations []swiss_army_knife.Operation
 
 		// Filter out base on key/value pair.
 		if cliCtx.String(filterKey) != "" {
@@ -82,14 +82,14 @@ func main() {
 				return errors.Wrap(err, fmt.Sprintf("%s (%s)", filterKey, value))
 			}
 
-			var pairs []technical_test.PairKeyValue
+			var pairs []swiss_army_knife.PairKeyValue
 			for _, pair := range kvs {
-				pairs = append(pairs, technical_test.PairKeyValue{
-					Key:   technical_test.Key(pair[0]),
-					Value: technical_test.Value(pair[1]),
+				pairs = append(pairs, swiss_army_knife.PairKeyValue{
+					Key:   swiss_army_knife.Key(pair[0]),
+					Value: swiss_army_knife.Value(pair[1]),
 				})
 			}
-			operations = append(operations, technical_test.NewFilteringOperation(ctx, pairs))
+			operations = append(operations, swiss_army_knife.NewFilteringOperation(ctx, pairs))
 		}
 
 		if cliCtx.String(appendKey) != "" {
@@ -100,22 +100,22 @@ func main() {
 				return errors.Wrap(err, fmt.Sprintf("%s (%s)", appendKey, value))
 			}
 
-			var pairs []technical_test.PairKeyValue
+			var pairs []swiss_army_knife.PairKeyValue
 			for _, pair := range kvs {
-				pairs = append(pairs, technical_test.PairKeyValue{
-					Key:   technical_test.Key(pair[0]),
-					Value: technical_test.Value(pair[1]),
+				pairs = append(pairs, swiss_army_knife.PairKeyValue{
+					Key:   swiss_army_knife.Key(pair[0]),
+					Value: swiss_army_knife.Value(pair[1]),
 				})
 			}
-			operations = append(operations, technical_test.NewAppendInformationOperation(ctx, pairs))
+			operations = append(operations, swiss_army_knife.NewAppendInformationOperation(ctx, pairs))
 		}
 
 		if cliCtx.String(removeKey) != "" {
-			var keys []technical_test.Key
+			var keys []swiss_army_knife.Key
 			for _, key := range strings.Split(cliCtx.String(removeKey), ":") {
-				keys = append(keys, technical_test.Key(key))
+				keys = append(keys, swiss_army_knife.Key(key))
 			}
-			operations = append(operations, technical_test.NewRemoveInformationOperation(ctx, keys))
+			operations = append(operations, swiss_army_knife.NewRemoveInformationOperation(ctx, keys))
 		}
 
 		// Prefixing a key.
@@ -127,14 +127,14 @@ func main() {
 				return errors.Wrap(err, fmt.Sprintf("%s (%s)", prefixingKey, value))
 			}
 
-			var pairs []technical_test.PairKeyPrefix
+			var pairs []swiss_army_knife.PairKeyPrefix
 			for _, pair := range kvs {
-				pairs = append(pairs, technical_test.PairKeyPrefix{
-					Key:    technical_test.Key(pair[0]),
+				pairs = append(pairs, swiss_army_knife.PairKeyPrefix{
+					Key:    swiss_army_knife.Key(pair[0]),
 					Prefix: pair[1],
 				})
 			}
-			operations = append(operations, technical_test.NewPrefixKeyOperation(ctx, pairs))
+			operations = append(operations, swiss_army_knife.NewPrefixKeyOperation(ctx, pairs))
 		}
 
 		// Process data
@@ -159,10 +159,10 @@ func main() {
 	}
 }
 
-func initInput() *ttio.StdinInput {
+func initInput() *sakio.StdinInput {
 	// create input Stdin
 	scanner := bufio.NewScanner(os.Stdin)
-	input := ttio.NewStdinInput(scanner)
+	input := sakio.NewStdinInput(scanner)
 	// add unmarshal to decode input value
 	input.WithUnmarshaling(func(_ context.Context, i string) (interface{}, error) {
 		var a interface{}
@@ -177,9 +177,9 @@ func initInput() *ttio.StdinInput {
 	return input
 }
 
-func initOutput() *ttio.StdoutOutput {
+func initOutput() *sakio.StdoutOutput {
 	// create output Stdout
-	output := ttio.StdoutOutput{}
+	output := sakio.StdoutOutput{}
 	// add marshal to encode output value
 	output.WithMarshaling(func(_ context.Context, i interface{}) (string, error) {
 		r, err := json.Marshal(i)

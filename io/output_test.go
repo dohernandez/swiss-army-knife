@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	ttio "github.com/heetch/Darien-technical-test/io"
-	"github.com/heetch/Darien-technical-test/test"
+	sakio "github.com/dohernandez/swiss-army-knife/io"
+	"github.com/dohernandez/swiss-army-knife/test"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +15,7 @@ const stdoutOutput = `{"id":7064,"lat":48.88340457471041,"lng":2.395291023810529
 {"id":1629,"lat":48.83168740132889,"lng":2.2485795413465577,"created_at":"2016-12-14 18:48:11"}`
 
 func TestStdoutOutputWrite(t *testing.T) {
-	assert := func(t *testing.T, ctx context.Context, output ttio.Output) {
+	assert := func(t *testing.T, ctx context.Context, output sakio.Output) {
 		for _, v := range strings.Split(stdoutOutput, "\n") {
 			output.Append(ctx, v)
 		}
@@ -34,8 +34,8 @@ func TestStdoutOutputWrite(t *testing.T) {
 
 	testCases := []struct {
 		scenario string
-		marshall ttio.MarshalOutput
-		assert   func(t *testing.T, ctx context.Context, output ttio.Output)
+		marshall sakio.MarshalOutput
+		assert   func(t *testing.T, ctx context.Context, output sakio.Output)
 	}{
 		{
 			scenario: "Write to Stdout successful",
@@ -55,7 +55,7 @@ func TestStdoutOutputWrite(t *testing.T) {
 		t.Run(tc.scenario, func(t *testing.T) {
 			ctx := context.TODO()
 
-			output := ttio.StdoutOutput{}
+			output := sakio.StdoutOutput{}
 
 			if tc.marshall != nil {
 				output.WithMarshaling(tc.marshall)

@@ -1,4 +1,4 @@
-package technical_test_test
+package swissarmyknife_test
 
 import (
 	"bufio"
@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	technical_test "github.com/heetch/Darien-technical-test"
-	ttio "github.com/heetch/Darien-technical-test/io"
-	"github.com/heetch/Darien-technical-test/test"
+	swiss_army_knife "github.com/dohernandez/swiss-army-knife"
+	sakio "github.com/dohernandez/swiss-army-knife/io"
+	"github.com/dohernandez/swiss-army-knife/test"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +20,7 @@ const stdinInput = `{"id":7064,"lat":48.88340457471041,"lng":2.3952910238105294,
 func TestChannelConveyorProcessor(t *testing.T) {
 	testCases := []struct {
 		scenario   string
-		operations []technical_test.Operation
+		operations []swiss_army_knife.Operation
 		output     string
 		errors     []error
 	}{
@@ -30,7 +30,7 @@ func TestChannelConveyorProcessor(t *testing.T) {
 		},
 		{
 			scenario: "Process data successful, with operation",
-			operations: []technical_test.Operation{
+			operations: []swiss_army_knife.Operation{
 				func(_ context.Context, value interface{}) (interface{}, error) {
 					return value, nil
 				},
@@ -39,7 +39,7 @@ func TestChannelConveyorProcessor(t *testing.T) {
 		},
 		{
 			scenario: "Process data unsuccessful, with operation fails",
-			operations: []technical_test.Operation{
+			operations: []swiss_army_knife.Operation{
 				func(_ context.Context, _ interface{}) (interface{}, error) {
 					return nil, errors.New("operation fails")
 				},
@@ -59,11 +59,11 @@ func TestChannelConveyorProcessor(t *testing.T) {
 			ctx := context.TODO()
 
 			scanner := bufio.NewScanner(strings.NewReader(stdinInput))
-			input := ttio.NewStdinInput(scanner)
+			input := sakio.NewStdinInput(scanner)
 
-			output := ttio.StdoutOutput{}
+			output := sakio.StdoutOutput{}
 
-			p := technical_test.ChannelConveyorProcessor{}
+			p := swiss_army_knife.ChannelConveyorProcessor{}
 
 			stdout := test.CaptureStdOut(func() {
 				err := p.Process(ctx, input, &output, tc.operations...)

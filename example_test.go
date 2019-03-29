@@ -1,4 +1,4 @@
-package technical_test_test
+package swissarmyknife_test
 
 import (
 	"bufio"
@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	technical_test "github.com/heetch/Darien-technical-test"
-	ttio "github.com/heetch/Darien-technical-test/io"
+	swiss_army_knife "github.com/dohernandez/swiss-army-knife"
+	sakio "github.com/dohernandez/swiss-army-knife/io"
 )
 
 func Example() {
@@ -19,12 +19,12 @@ func Example() {
 
 	// create input Stdin
 	scanner := bufio.NewScanner(strings.NewReader(stdin))
-	input := ttio.NewStdinInput(scanner)
+	input := sakio.NewStdinInput(scanner)
 
 	// create output Stdout
-	output := ttio.StdoutOutput{}
+	output := sakio.StdoutOutput{}
 
-	p := technical_test.ChannelConveyorProcessor{}
+	p := swiss_army_knife.ChannelConveyorProcessor{}
 
 	if err := p.Process(context.TODO(), input, &output); err != nil {
 		panic(err)
@@ -46,7 +46,7 @@ func Example_with_filter_operation() {
 
 	// create input from Stdin
 	scanner := bufio.NewScanner(strings.NewReader(stdin))
-	input := ttio.NewStdinInput(scanner)
+	input := sakio.NewStdinInput(scanner)
 	// add unmarshal to decode input value
 	input.WithUnmarshaling(func(_ context.Context, i string) (interface{}, error) {
 		var a interface{}
@@ -59,7 +59,7 @@ func Example_with_filter_operation() {
 	})
 
 	// create output Stdout
-	output := ttio.StdoutOutput{}
+	output := sakio.StdoutOutput{}
 	// add marshal to encode output value
 	output.WithMarshaling(func(_ context.Context, i interface{}) (string, error) {
 		r, err := json.Marshal(i)
@@ -70,18 +70,18 @@ func Example_with_filter_operation() {
 		return string(r), nil
 	})
 
-	p := technical_test.ChannelConveyorProcessor{}
+	p := swiss_army_knife.ChannelConveyorProcessor{}
 
 	if err := p.Process(context.TODO(), input, &output, func(ctx context.Context, value interface{}) (interface{}, error) {
 		m, ok := value.(map[string]interface{})
 		if !ok {
-			return nil, technical_test.ErrTypeMismatch
+			return nil, swiss_army_knife.ErrTypeMismatch
 		}
 
 		// comparison is done converting values to string using fmt.Sprint to avoid untyped constant
 		// which is the type to which the constant is implicitly converted.
 		if fmt.Sprint(m["id"]) == fmt.Sprint(filterOut) {
-			return nil, technical_test.ErrDoNotEmit
+			return nil, swiss_army_knife.ErrDoNotEmit
 		}
 
 		return value, nil

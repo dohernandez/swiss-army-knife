@@ -1,16 +1,16 @@
-package technical_test
+package swissarmyknife
 
 import (
 	"context"
 	"io"
 	"sync"
 
-	ttio "github.com/heetch/Darien-technical-test/io"
+	sakio "github.com/dohernandez/swiss-army-knife/io"
 )
 
 // Processor defines a contract to process data.
 type Processor interface {
-	Process(ctx context.Context, input ttio.Input, output ttio.Output, operations ...Operation) error
+	Process(ctx context.Context, input sakio.Input, output sakio.Output, operations ...Operation) error
 }
 
 // ChannelConveyorProcessor a processor that uses ChannelConveyor to share data between operations.
@@ -22,7 +22,7 @@ var _ Processor = new(ChannelConveyorProcessor)
 
 // Process processes the data input thro the operations defines and outputted the result.
 // Returns error if outputting the result fails.
-func (p *ChannelConveyorProcessor) Process(ctx context.Context, input ttio.Input, output ttio.Output, operations ...Operation) error {
+func (p *ChannelConveyorProcessor) Process(ctx context.Context, input sakio.Input, output sakio.Output, operations ...Operation) error {
 	var wg sync.WaitGroup
 	inputs := make(chan interface{})
 	operationResults := make(chan error)
@@ -78,7 +78,7 @@ func (p *ChannelConveyorProcessor) Process(ctx context.Context, input ttio.Input
 // operation in the list.
 // As it is a function that runs in the background - using go routines - error will be sent to the main routine
 // thro the channel `operationResults`.
-func (p *ChannelConveyorProcessor) inputConveyor(ctx context.Context, wg *sync.WaitGroup, input ttio.Input, cc ChannelConveyor, operationResults chan error) {
+func (p *ChannelConveyorProcessor) inputConveyor(ctx context.Context, wg *sync.WaitGroup, input sakio.Input, cc ChannelConveyor, operationResults chan error) {
 	wg.Add(1)
 
 	go func(ctx context.Context, c ChannelConveyor) {
@@ -147,7 +147,7 @@ func (p *ChannelConveyorProcessor) operateConveyor(ctx context.Context, wg *sync
 // it will take the exact input) and add it to the output.
 // As it is a function that runs in the background - using go routines - error will be sent to the main routine
 // thro the channel `operationResults`.
-func (p *ChannelConveyorProcessor) outputConveyor(ctx context.Context, wg *sync.WaitGroup, output ttio.Output, cc ChannelConveyor, operationResults chan error) {
+func (p *ChannelConveyorProcessor) outputConveyor(ctx context.Context, wg *sync.WaitGroup, output sakio.Output, cc ChannelConveyor, operationResults chan error) {
 	wg.Add(1)
 
 	go func(ctx context.Context, c ChannelConveyor) {
