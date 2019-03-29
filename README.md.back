@@ -1,0 +1,65 @@
+![Heetch](logo.png)
+
+Welcome to Heetch Technical test!
+
+In order to give some context, we’re going to put ourselves in the following imaginary situation: _you’re part of the Boost team and you’ve been asked to build a solution based on the following specs_.
+
+To deal with huge amounts of data, we need to build a swiss army knife to cut through a large stream of JSON objects. This tool is going to be used by other developers, data engineers and so on.
+
+In broad terms it looks like this:
+
+![Schema](schema.png)
+
+To give some background, the stream of JSON objects can be locations updates from drivers, comments about rides etc.
+For example, we may want to reject locations updates from a specific driver, add a new key that says in which country this location update happened or even prefix a key.
+
+In concrete terms, this means the following operations **must be directly supported**:
+
+- rejecting an object based on a value
+- adding a key value pair on an object
+- removing a key from an object
+- prefixing a key with a string
+
+That stream can be consumed from both:
+
+- the command line
+  - where the stream comes from `STDIN` and is outputted on `STDOUT`
+  - ex: `cat locations.json_dump | <your tool>`
+  - feel free to design its usage to your liking
+- as a library
+  - where we can configure the input source and output destination, such as reading from the network and outputting in a file for example
+
+:arrow_down: [Here is a dump of example stream you can use to test your solution](https://heetch-technical-test.s3.amazonaws.com/backend-technical-test2/ordered_driver_positions.json_dump?AWSAccessKeyId=AKIAIVXYFEJ7CGZIOHDA&Expires=1574185301&Signature=6eUOeyebtKxEewb5adsoYd70etc%3D)
+
+# Prerequisites
+
+- handle all failure cases
+- your solution should be simple to use
+- don’t bother with nested fields
+- it should be simple for _library users_ to add new operations
+- a CLI tool based on the library should be provided
+- documentation
+  - it should be easy for a user to understand how to use the cli tool
+  - it should be easy for a user of the library to understand how to use its public api
+  - provide a proper `README.md`:
+    - explain how to setup and run your code
+    - including all informations you feel that may be useful for a seamless coworker on-boarding
+- tests
+
+# Workflow
+
+- use the programming language you'll be using for your daily work within the Dev-Care (Boost) team.
+  - if you're applying as an Elixir dev, pick Elixir
+  - if you're applying as an Go dev, pick Go
+- create a new branch
+- commit and push to this branch
+- submit a pull request once you have finished
+
+We will then review your pull request and will debrief with you through the comments.
+
+# Bonus
+
+- Implement proper logging
+- Implement a throttling operation with the strategy of your choice
+- Dockerize all the things :whale:
+- Add whatever you think is necessary to make the app awesome :sparkles:

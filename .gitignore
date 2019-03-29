@@ -1,0 +1,6 @@
+# Output of the go coverage tool
+*.coverprofile
+coverage.txt
+
+bin/
+vendor/
