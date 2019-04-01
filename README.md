@@ -12,12 +12,18 @@ swiss-army-knife is also available as a cli tool, for those who wants to use it 
     - [Installation](#installation)
         - [Install library](#install-library)
         - [Install swiss-army-knife! cli tool](#install-binaries)
+        - [Install swiss-army-knife! cli tool from source (advanced)](#install-binaries-advanced)
     - [Usage](#usage)
         - [Library](#library)
             - [Operations](#operations)
             - [Input](#input)
             - [Output](#output)
         - [swiss-army-knife! cli tool](#swiss-army-knife!-cli-tool)
+- [Development](#development) 
+    - [Build](#build)
+    - [Test](#test)
+    - [Recommendation](#recommendation) 
+    - [Travis CI](#travis-ci)      
 - [Contributing](#contributing)
 
 ## Getting started
@@ -29,7 +35,7 @@ In this getting started guide we will go through how to [install](#installation)
 #### Install library
 
 ```bash
-go get -u github.com/dohernandez/swiss-army-knife
+go get -u github.com/heetch/Darien-technical-test
 ```
 
 [[table of contents]](#table-of-contents)
@@ -37,9 +43,34 @@ go get -u github.com/dohernandez/swiss-army-knife
 <a name="install-binaries"></a>
 #### Install swiss-army-knife! binaries
 
-You can download the binary for your platform of choice from the [releases page](https://github.com/dohernandez/swiss-army-knife/releases/latest).
+You can download the binary for your platform of choice from the [releases page](https://github.com/heetch/Darien-technical-test/releases/latest).
 
 Once downloaded, the binary can be run from anywhere. Ideally, though, you should move it into your $PATH for easy use. /usr/local/bin is a popular location for this.
+
+<a name="install-binaries-advance"></a>
+#### Install swiss-army-knife! cli tool from source (advanced)
+
+Clone this repo
+
+```bash
+git clone ...
+```
+
+cd into the folder
+
+```bash
+cd <path to the repo>
+```
+
+build the binary
+
+```bash
+make build
+```
+
+the binary can be find `<path to the repo>/bin/swiss-army-knife`
+
+Once the binary is built, the binary can be run. Ideally, though, you should move it into your $PATH for easy use. /usr/local/bin is a popular location for this.
 
 [[table of contents]](#table-of-contents)
 
@@ -48,7 +79,7 @@ Once downloaded, the binary can be run from anywhere. Ideally, though, you shoul
 #### Library
 
 `ChannelConveyorProcessor` provides an API to apply operations to a given input data and put the result into a given output. `ChannelConveyorProcessor` takes each 
-input item and run each operation one after the other over the item. Finally the result is append to the output. 
+input item and run each operation one after the other over the item. Finally the result is append to the output. Errors are collected and provided.
 
 `ChannelConveyorProcessor` use a `ChannelConveyor`, which is a part of an implementation of the Pipeline Patterns in Go, to connect the `input-output-input` of the operations using channels.
 
@@ -63,8 +94,8 @@ import (
     "fmt"
     "os"
 
-    swiss_army_knife "github.com/dohernandez/swiss-army-knife"
-    sakio "github.com/dohernandez/swiss-army-knife/io"
+    technical_test "github.com/heetch/Darien-technical-test"
+    ttio "github.com/heetch/Darien-technical-test/io"
 )
 
 func main() {
@@ -72,15 +103,20 @@ func main() {
 	
 	// create input Stdin
     scanner := bufio.NewScanner(os.Stdin)
-    input := sakio.NewStdinInput(scanner)
+    input := ttio.NewStdinInput(scanner)
 
     // create output Stdout
-    output := sakio.StdoutOutput{}
+    output := ttio.StdoutOutput{}
 
-    p := swiss_army_knife.ChannelConveyorProcessor{}
+    p := technical_test.ChannelConveyorProcessor{}
 
     if err := p.Process(ctx, input, &output); err != nil {
-        panic(err)
+        fmt.Println(err)
+    }
+    
+    // do something with all errors collected that happen during processing
+    for _, err := range p.Errors() {
+        fmt.Println(err)
     }
 }
 ```
@@ -127,10 +163,10 @@ func filteringOperation(ctx context.Context, value interface{}) (interface{}, er
 
 The following default operations are available in the library.
 
-- `swiss_army_knife.NewFilteringOperation` creates a filtering Operation based on pairs.
-- `swiss_army_knife.NewAppendInformationOperation` creates an append information Operation based on pairs.
-- `swiss_army_knife.NewRemoveInformationOperation` creates a remove information Operation based on key.
-- `swiss_army_knife.NewPrefixKeyOperation` creates a prefix key Operation based on key/prefix pair.
+- `technical_test.NewFilteringOperation` creates a filtering Operation based on pairs.
+- `technical_test.NewAppendInformationOperation` creates an append information Operation based on pairs.
+- `technical_test.NewRemoveInformationOperation` creates a remove information Operation based on key.
+- `technical_test.NewPrefixKeyOperation` creates a prefix key Operation based on key/prefix pair.
 
 [[table of contents]](#table-of-contents)
 
@@ -210,6 +246,72 @@ Using multiple operation
 ```bash
 cat locations.json_dump | swiss-army-knife --filter id:482 --prefix "lat:c_;lng:c_"
 ```
+
+[[table of contents]](#table-of-contents)
+
+## Development
+
+Routine operations are defined in `Makefile`.
+
+```bash
+swiss-army-knife routine operations
+
+  deps:                 Ensure dependencies according to toml file
+  deps-vendor:          Ensure dependencies according to lock file
+  build:                Build binary
+  run-compile-daemon:   Run application with CompileDaemon (automatic rebuild on code change)
+  lint:                 Check with golangci-lint
+  fix-lint:             Apply goimports and gofmt
+  test:                 Run unit tests
+
+Usage
+  make <flags> [options]
+```
+
+### Build
+
+To build the binary, execute
+
+```bash
+make build
+```
+
+it will create the binary in the folder `bin/swiss-army-knife`
+
+### Test
+
+To run the suite test, execute
+
+```bash
+make test
+```
+
+**Note:** Before to exec the suite test, make sure you have the latest version of the binary built. We recommend to execute
+
+```bash
+make build test
+``` 
+
+### Recommendation
+
+We highly recommend before to commit anything, to execute
+
+```bash
+make build test lint fix-lint
+```
+
+to built the binary, run the suite test, check with golangci-lint and apply goimports and gofmt.
+
+[[table of contents]](#table-of-contents)
+
+### Travis CI
+
+To setup travis, the following environment variables must to be defined in Travis CI.
+
+- `CODECOV_TOKEN` [coveralls.io](https://coveralls.io) token to give travis access to push code coverage.
+- `GITHUB_TOKEN` [github](https://github.com) token to give travis access to push releases.
+- `QUAY_USERNAME` [quay.io](https://quay.io) quay.io user name to give travis access to push docker images.
+- `QUAY_PASSWORD` [quay.io](https://quay.io) quay.io password to give travis access to push releases.
 
 [[table of contents]](#table-of-contents)
 
