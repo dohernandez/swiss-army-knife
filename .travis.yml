@@ -39,7 +39,7 @@ jobs:
       install: skip
       script:
         - resources/scripts/ci-promote-release.sh
-      if: branch = master
+      if: branch = master && type != pull_request
       env:
         - SEMVER_RELEASE_LEVEL=minor
         - VERSION=$(eval ./resources/scripts/ci-bump-version.sh)
@@ -54,4 +54,4 @@ jobs:
     - stage: "Promote Docker Image"
       install: skip
       script: resources/scripts/ci-promote-docker-image.sh
-      if: branch = master
+      if: branch = master && type != pull_request
