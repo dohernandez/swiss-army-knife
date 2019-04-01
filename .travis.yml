@@ -6,8 +6,10 @@ go:
   - 1.12.x
 
 branches:
-  except:
-  - /^v[0-9]/
+  only:
+    - master
+    - /(^|[-\/])(major|release|minor|feature|patch|issue|hotfix)[-\/]?/
+
 
 env:
   global:
