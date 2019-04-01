@@ -42,6 +42,7 @@ jobs:
 
       deploy:
         provider: releases
+        name: "v${VERSION}"
         api_key: $GITHUB_TOKEN
         skip_cleanup: true
         file: "archive/*.tar.gz"
