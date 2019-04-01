@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-# Get the last commit
-LAST_COMMIT=$(git log -n 1 --format='%H')
-echo "TRAVIS_COMMIT ${TRAVIS_COMMIT}"
-
-BRANCH_NAME=$(curl -H "Authorization: bearer ${ACCESS_TOKEN}" -X POST -d " \
+# Find branch name of merge pull request
+echo "Finding branch for commit ${TRAVIS_COMMIT}"
+BRANCH_NAME=$(curl -H "Authorization: bearer ${GITHUB_TOKEN}" -X POST -d " \
  { \
    \"query\": \"query { \
   repository(owner:\\\"${GITHUB_OWNER}\\\", name:\\\"${GITHUB_REPO}\\\") { \
@@ -20,9 +18,9 @@ BRANCH_NAME=$(curl -H "Authorization: bearer ${ACCESS_TOKEN}" -X POST -d " \
   } \
 }\" \
  } \
- " https://api.github.com/graphql | jq -r ".data.repository.pullRequests.nodes[] | select(.mergeCommit.oid == \"${LAST_COMMIT}\").headRefName")
+ " https://api.github.com/graphql | jq -r ".data.repository.pullRequests.nodes[] | select(.mergeCommit.oid == \"${TRAVIS_COMMIT}\").headRefName")
 
-echo "Found the following Branch for commit ${LAST_COMMIT}: ${BRANCH_NAME}"
+echo "Found the following branch for commit ${TRAVIS_COMMIT}: ${BRANCH_NAME}"
 
 # Find the largest version bump based on the merged PR's
 BUMP=""
@@ -40,7 +38,7 @@ else
 fi
 
 # Bump the version
-echo "Bumping ${BUMP} version"
+echo "Bumping ${BUMP} version: ${VERSION}"
 
 git clone https://github.com/fsaintjacques/semver-tool /tmp/semver &> /dev/null
 BUMPED_UP_VERSION=$(/tmp/semver/src/semver bump $BUMP $VERSION)

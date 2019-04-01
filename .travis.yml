@@ -39,8 +39,6 @@ jobs:
       install: resources/scripts/ci-bump-version.sh
       script: resources/scripts/ci-promote-release.sh
       if: branch = master && type != pull_request
-      env:
-        - ACCESS_TOKEN=$GITHUB_TOKEN
 
       deploy:
         provider: releases

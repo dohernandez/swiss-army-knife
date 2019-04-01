@@ -2,6 +2,7 @@
 
 set -e
 
+# Installing goveralls
 go get github.com/mattn/goveralls
 
 # Installing vendor
