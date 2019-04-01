@@ -5,8 +5,6 @@ set -e
 echo "Setting configuration"
 FILE_EXTENSIONS='\.go$'
 
-PROJECT_SRC="${GOPATH}"/src/"${GOPACKAGE}"
-
 # Detect the changed files
 echo "Detecting the changed files"
 git diff --name-only "${TRAVIS_COMMIT_RANGE}" | (grep -i -E "${FILE_EXTENSIONS}" || true) > changed_files.txt
@@ -20,12 +18,6 @@ fi
 echo "Affected files: ${CHANGE_COUNT}"
 
 # Code style checker begin
-
-# Move go code to the source directory
-mkdir -p "${PROJECT_SRC}"
-cp -r . "${PROJECT_SRC}"
-cd "${PROJECT_SRC}"
-
 printf "Checking golint: "
 err_count=0
 while IFS= read -r file; do
