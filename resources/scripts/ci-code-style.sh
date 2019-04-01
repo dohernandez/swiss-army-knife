@@ -2,16 +2,14 @@
 set -e
 
 # Configuration
-echo "Configuration"
+echo "Setting configuration"
 FILE_EXTENSIONS='\.go$'
 
-PROJECT_SRC="${GOPATH}"/src/"${GOPACKAGE}"
-
 # Detect the changed files
-echo "Detect the changed files"
+echo "Detecting the changed files"
 git diff --name-only "${TRAVIS_COMMIT_RANGE}" | (grep -i -E "${FILE_EXTENSIONS}" || true) > changed_files.txt
 
-echo "Change count"
+printf "Change count: "
 CHANGE_COUNT=$(wc -l < changed_files.txt)
 if [ "${CHANGE_COUNT}" = "0" ]; then
 echo "No files affected. Skipping"
@@ -20,13 +18,7 @@ fi
 echo "Affected files: ${CHANGE_COUNT}"
 
 # Code style checker begin
-
-# Move go code to the source directory
-mkdir -p "${PROJECT_SRC}"
-cp -r . "${PROJECT_SRC}"
-cd "${PROJECT_SRC}"
-
-echo "Checking golint: "
+printf "Checking golint: "
 err_count=0
 while IFS= read -r file; do
   if ! golint -set_exit_status "$file"; then

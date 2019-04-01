@@ -3,7 +3,7 @@
 set -e
 
 # Configuration
-echo "Seeting configuration"
+echo "Setting configuration"
 echo "VERSION ${VERSION}"
 
 QUAY_REPO_SLUG="quay.io/${QUAY_USERNAME}/${BINARY_NAME}"

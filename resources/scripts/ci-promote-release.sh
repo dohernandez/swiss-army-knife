@@ -2,8 +2,7 @@
 set -e
 
 # Configuration
-echo "Seeting configuration"
-
+echo "Configuration"
 VERSION=$(cat version/version)
 echo "VERSION ${VERSION}"
 
