@@ -3,6 +3,8 @@ set -e
 
 # Configuration
 echo "Seeting configuration"
+
+VERSION=$(cat version/version)
 echo "VERSION ${VERSION}"
 
 ROOT_DIR="$(pwd)"
