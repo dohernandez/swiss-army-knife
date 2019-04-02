@@ -13,7 +13,7 @@ docker login -u="${QUAY_USERNAME}" -p="${QUAY_PASSWORD}" quay.io
 docker build -t "${QUAY_REPO_SLUG}:${VERSION}" \
        --build-arg VERSION \
        --build-arg USER="${QUAY_USERNAME}" \
-       --cache-from "${QUAY_REPO_SLUG}:latest" .
+       . --cache-from "${QUAY_REPO_SLUG}:latest"
 docker tag "${QUAY_REPO_SLUG}:${VERSION}" "${QUAY_REPO_SLUG}:latest"
 docker push "${QUAY_REPO_SLUG}:${VERSION}"
 docker push "${QUAY_REPO_SLUG}:latest"
