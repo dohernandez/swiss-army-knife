@@ -12,8 +12,8 @@ git diff --name-only "${TRAVIS_COMMIT_RANGE}" | (grep -i -E "${FILE_EXTENSIONS}"
 printf "Change count: "
 CHANGE_COUNT=$(wc -l < changed_files.txt)
 if [ "${CHANGE_COUNT}" = "0" ]; then
-echo "No files affected. Skipping"
-exit 0
+    echo "No files affected. Skipping"
+    exit 0
 fi
 echo "Affected files: ${CHANGE_COUNT}"
 

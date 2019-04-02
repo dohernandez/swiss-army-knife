@@ -42,7 +42,7 @@ jobs:
 
       deploy:
         provider: releases
-        name: "v${VERSION}"
+        name: $(eval ./resources/scripts/ci-release-name.sh)
         api_key: $GITHUB_TOKEN
         skip_cleanup: true
         file: "archive/*.tar.gz"
