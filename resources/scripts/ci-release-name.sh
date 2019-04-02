@@ -12,8 +12,4 @@ VERSION=$(cat version/version)
 # Setting release name
 RELEASE_NAME="v${VERSION}"
 
-if [ "${TRAVIS_EVENT_TYPE}" == "pull_request" ]; then
-    RELEASE_NAME="${RELEASE_NAME}-draft"
-fi
-
 echo "${RELEASE_NAME}"
